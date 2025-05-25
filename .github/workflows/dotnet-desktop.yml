@@ -16,17 +16,14 @@ jobs:
 
       - name: Create or update a file
         run: |
-          # 日付と時刻を取得してファイル名に含める
-          TIMESTAMP=$(date "+%Y%m%d%H%M%S")
+          TIMESTAMP=date
           FILE_NAME="my-generated-file-${TIMESTAMP}.txt"
           
-          # ファイルの内容
           echo "This file was created by GitHub Actions on $(date)." > "$FILE_NAME"
           echo "Current timestamp: $TIMESTAMP" >> "$FILE_NAME"
           echo "This is a new line added by the workflow." >> "$FILE_NAME"
-          
           echo "Created file: $FILE_NAME"
-          ls -l # 作成されたファイルを確認
+          ls -l
 
       - name: Configure Git
         run: |
@@ -38,7 +35,7 @@ jobs:
 
       - name: Add and commit changes
         run: |
-          git add . # 全ての変更をステージング
+          git add .
           git commit -m "feat: Add new generated file [skip ci]" || echo "No changes to commit"
         # '|| echo "No changes to commit"' は、変更がない場合にエラーにならないようにするためです。
         # '[skip ci]' は、このコミットによって再度CIがトリガーされるのを防ぐための慣習的なタグです。
