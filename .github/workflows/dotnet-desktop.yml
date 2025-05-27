@@ -5,18 +5,32 @@ on:
   # または、定期的に実行したい場合は cron を使う
   # schedule:
   #   - cron: '0 0 * * *' # 毎日午前0時 (UTC) に実行
+  pull_request:
+    branches:
+      - main
+      
+permissions:
+  pull-requests: write
+  contents: write
 
 jobs:
   create_and_commit:
     runs-on: ubuntu-latest # 実行環境
-
+    env:
+      PR_URL: ${{github.event.pull_request.html_url}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 # リポジトリをチェックアウト
+        with:
+          fetch-depth: 0
+      - name: Create branch
+        run: |
+          git checkout -b test
 
       - name: Create or update a file
         run: |
-          TIMESTAMP=date
+          TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S')
           FILE_NAME="my-generated-file-${TIMESTAMP}.txt"
           
           echo "This file was created by GitHub Actions on $(date)." > "$FILE_NAME"
@@ -44,5 +58,10 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }} # 自動生成されるトークンを使用
-          # branch: main # 特定のブランチにプッシュしたい場合 (デフォルトは現在のブランチ)
+          branch: test # 特定のブランチにプッシュしたい場合 (デフォルトは現在のブランチ)
           # force: true # 強制プッシュしたい場合 (推奨されません)name: Create and Commit File
+      
+      - name: Approve PR
+        run: gh pr review "$PR_URL" --approve
+      - name: Enable auto-merge for Steward PRs
+        run: gh pr merge --merge --auto "$PR_URL"
