@@ -1,67 +1,53 @@
-name: Create and Commit File
+name: "Create PR"
 
-on:
-  workflow_dispatch: # 手動でワークフローを実行できるようにする
-  # または、定期的に実行したい場合は cron を使う
-  # schedule:
-  #   - cron: '0 0 * * *' # 毎日午前0時 (UTC) に実行
-  pull_request:
-    branches:
-      - main
-      
-permissions:
-  pull-requests: write
-  contents: write
+on: [ workflow_dispatch ]
+
+env:
+  JSON_FILE_PATH: sample.json
+  PR_TITLE: プルリクエストタイトル
+  PR_LABEL: hoge,foo
+  PR_TEMPLATE: .github/PULL_REQUEST_TEMPLATE.md
+  DEST_BRANCH: main
 
 jobs:
-  create_and_commit:
-    runs-on: ubuntu-latest # 実行環境
-    env:
-      PR_URL: ${{github.event.pull_request.html_url}}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4 # リポジトリをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set current datetime as env variable
+        env:
+          TZ: 'Asia/Tokyo'
+        run: echo "CURRENT_DATETIME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Create new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git switch -c fix/hoge_${{ env.CURRENT_DATETIME }}
+          git push -u origin fix/hoge_${{ env.CURRENT_DATETIME }}
+
+      # 任意の更新処理
+      - name: Update json file
+        run: |
+          cat ${{ env.JSON_FILE_PATH }} | jq '.+ {"user":{"name": "hoge","age": 30}}' > tmp && mv tmp ${{ env.JSON_FILE_PATH }}
+
+      - name: Add and Commit
+        uses: EndBug/add-and-commit@v7
         with:
-          fetch-depth: 0
-      - name: Create branch
-        run: |
-          git checkout -b test
+          branch: fix/hoge_${{ env.CURRENT_DATETIME }}
+          message: ${{ env.PR_TITLE }}
+          add: ${{ env.JSON_FILE_PATH }}
 
-      - name: Create or update a file
-        run: |
-          TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S')
-          FILE_NAME="my-generated-file-${TIMESTAMP}.txt"
-          
-          echo "This file was created by GitHub Actions on $(date)." > "$FILE_NAME"
-          echo "Current timestamp: $TIMESTAMP" >> "$FILE_NAME"
-          echo "This is a new line added by the workflow." >> "$FILE_NAME"
-          echo "Created file: $FILE_NAME"
-          ls -l
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        # 注: GitHub公式のbotユーザーを使用するのがベストプラクティスです。
-        # 自分のGitHubアカウントのメールアドレスや名前を設定することも可能ですが、
-        # その場合、トークンに適切な権限が必要です。
-
-      - name: Add and commit changes
-        run: |
-          git add .
-          git commit -m "feat: Add new generated file [skip ci]" || echo "No changes to commit"
-        # '|| echo "No changes to commit"' は、変更がない場合にエラーにならないようにするためです。
-        # '[skip ci]' は、このコミットによって再度CIがトリガーされるのを防ぐための慣習的なタグです。
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Create pull request
+        uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # 自動生成されるトークンを使用
-          branch: test # 特定のブランチにプッシュしたい場合 (デフォルトは現在のブランチ)
-          # force: true # 強制プッシュしたい場合 (推奨されません)name: Create and Commit File
-      
-      - name: Approve PR
-        run: gh pr review "$PR_URL" --approve
-      - name: Enable auto-merge for Steward PRs
-        run: gh pr merge --merge --auto "$PR_URL"
+          source_branch: fix/hoge_${{ env.CURRENT_DATETIME }}
+          destination_branch: ${{ env.DEST_BRANCH }}
+          pr_title: ${{ env.PR_TITLE }}
+          pr_template: ${{ env.PR_TEMPLATE }}
+          pr_label: ${{ env.PR_LABEL }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
