@@ -4,21 +4,24 @@ on:
   workflow_dispatch
 
 jobs:
-  auto-format:
+  clone:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      OWNER: ${{ github.repository_owner }}
     steps:
-      - uses: actions/create-github-app-token@v2
-        id: app-token
+      - name: Generate GitHub App Token
+        id: app_token
+        uses: actions/create-github-app-token@v1
         with:
-          # required
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.head_ref }}
-          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          persist-credentials: false
-      - uses: creyD/prettier_action@v4.3
-        with:
-          github_token: ${{ steps.app-token.outputs.token }}
+          owner: ${{ env.OWNER }} # 操作したいリポジトリのオーナーを指定する
+
+      - name: Clone private repository
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
+          git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
+          ls -la
