@@ -25,3 +25,9 @@ jobs:
           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
           ls -R
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: | 
+            8.0.x
+      - run: dotnet run --project ./Main
