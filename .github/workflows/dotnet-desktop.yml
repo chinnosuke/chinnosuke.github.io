@@ -4,7 +4,7 @@ on:
   workflow_dispatch
 
 jobs:
-  clone:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
@@ -33,5 +33,24 @@ jobs:
             8.0.x
       - run: |
            dotnet run --project ./Main
-           ls -R
-           
+           mkdir data
+           mv test.csv ./data
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my_site
+          path: data
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: data
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@v1
+        id: deployment
