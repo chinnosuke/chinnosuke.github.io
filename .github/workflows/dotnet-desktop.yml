@@ -31,4 +31,7 @@ jobs:
         with:
           dotnet-version: | 
             8.0.x
-      - run: dotnet run --project ./Main
+      - run: |
+           dotnet run --project ./Main
+           ls -R
+           
