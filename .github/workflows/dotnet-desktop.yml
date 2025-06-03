@@ -21,7 +21,7 @@ jobs:
       - name: Download GitHub Pages Artifact
         uses: actions/download-artifact@v4
         with:
-          name: github-pages # アップロードされたアーティファクトの名前
+          name: my_site # アップロードされたアーティファクトの名前
           path: './downloaded-pages-content' # ダウンロード先のディレクトリ
       - name: Download Dir
         run: |
