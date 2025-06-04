@@ -17,11 +17,10 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
           owner: ${{ env.OWNER }} # 操作したいリポジトリのオーナーを指定する
-      
+      - run: mkdir ./downloaded-pages-content
       - name: Download GitHub Pages Artifact
         uses: actions/download-artifact@v4
         with:
-          name: my_site # アップロードされたアーティファクトの名前
           path: './downloaded-pages-content' # ダウンロード先のディレクトリ
       - name: Download Dir
         run: |
