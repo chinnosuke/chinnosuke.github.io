@@ -23,6 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
+          ls -R
           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
           ls -R
       - uses: actions/checkout@v4
