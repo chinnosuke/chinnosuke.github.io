@@ -18,6 +18,12 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
           owner: ${{ env.OWNER }} # 操作したいリポジトリのオーナーを指定する
+      - name: Cache restore/save
+        id: cache_restore
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.cache_dir }}
+          key: ${{ env.cache_key }}
       - name: Clone private repository
         env:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
@@ -44,12 +50,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: data
-      - name: Cache restore/save
-        id: cache_restore
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.cache_dir }}
-          key: ${{ env.cache_key }}
+      
   deploy:
     needs: build
     runs-on: ubuntu-latest
