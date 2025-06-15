@@ -27,11 +27,13 @@ jobs:
       - name: Create txt file
         run: |
           ls -R
-          if [ ! -e .Main/cache.txt ]; then
+          if [ ! -d ./Main ]; then
             mkdir Main
+          fi
+          if [ ! -e ./Main/cache.txt ]; then
             cat .Main/cache.txt
           fi
-          date > .Main/cache.txt
+          date > ./Main/cache.txt
       - name: Clone private repository
         env:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
