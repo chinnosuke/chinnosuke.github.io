@@ -8,7 +8,7 @@ jobs:
     timeout-minutes: 5
     env:
       OWNER: ${{ github.repository_owner }}
-      cache_key: cache_2025_01_01  # ※ 本来このような適当なkeyは使用しない
+      cache_key: cache-  # ※ 本来このような適当なkeyは使用しない
       cache_dir: ./Main
     steps:
       - name: Generate GitHub App Token
@@ -18,12 +18,18 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
           owner: ${{ env.OWNER }} # 操作したいリポジトリのオーナーを指定する
+      - name: Create time stamp
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
       - name: Cache restore/save
         id: cache_restore
         uses: actions/cache@v4
         with:
           path: ${{ env.cache_dir }}
-          key: ${{ env.cache_key }}
+          # key: ${{ env.cache_key }}
+          restore-keys: |
+            ${{ env.cache_key }}
       - name: Create txt file
         run: |
           if [ ! -d ./Main ]; then
@@ -47,7 +53,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ${{ env.cache_dir }}
-          key: ${{ env.cache_key }}
+          key: ${{ env.cache_key }}${{ env.TIMESTAMP }}
       - uses: actions/checkout@v4
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
