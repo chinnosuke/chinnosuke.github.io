@@ -29,11 +29,11 @@ jobs:
           if [ ! -d ./Main ]; then
             mkdir Main
           fi
-          cd Main
-          ls
           if [ -e ./Main/cache.txt ]; then
             cat ./Main/cache.txt
           fi
+          cd Main
+          ls
           date > ./Main/cache.txt
       - name: Clone private repository
         env:
