@@ -43,6 +43,11 @@ jobs:
           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
           ls -R
 
+      - name: Cache restore/save
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.cache_dir }}
+          key: ${{ env.cache_key }}
       - uses: actions/checkout@v4
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
