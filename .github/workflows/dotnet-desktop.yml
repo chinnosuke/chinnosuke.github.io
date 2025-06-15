@@ -26,11 +26,12 @@ jobs:
           key: ${{ env.cache_key }}
       - name: Create txt file
         run: |
-          if [ -e .Main/cache.txt ]; then
+          ls -R
+          if [ ! -e .Main/cache.txt ]; then
             mkdir Main
             cat .Main/cache.txt
           fi
-          date > cache.txt
+          date > .Main/cache.txt
       - name: Clone private repository
         env:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
