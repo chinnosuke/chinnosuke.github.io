@@ -26,10 +26,11 @@ jobs:
           key: ${{ env.cache_key }}
       - name: Create txt file
         run: |
-          ls -R
           if [ ! -d ./Main ]; then
             mkdir Main
           fi
+          cd Main
+          ls
           if [ -e ./Main/cache.txt ]; then
             cat ./Main/cache.txt
           fi
