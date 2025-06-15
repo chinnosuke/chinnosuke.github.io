@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.cache_dir }}
-          # key: ${{ env.cache_key }}
+          key: ${{ env.cache_key }}
           restore-keys: |
             ${{ env.cache_key }}
       - name: Create txt file
