@@ -24,6 +24,12 @@ jobs:
         with:
           path: ${{ env.cache_dir }}
           key: ${{ env.cache_key }}
+      - name: Create txt file
+        run: |
+          if [ -e cache.txt ]; then
+           cat cache.txt
+          fi
+          date > cache.txt
       - name: Clone private repository
         env:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
