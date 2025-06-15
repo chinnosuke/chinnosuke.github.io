@@ -30,8 +30,8 @@ jobs:
           if [ ! -d ./Main ]; then
             mkdir Main
           fi
-          if [ ! -e ./Main/cache.txt ]; then
-            cat .Main/cache.txt
+          if [ -e ./Main/cache.txt ]; then
+            cat ./Main/cache.txt
           fi
           date > ./Main/cache.txt
       - name: Clone private repository
