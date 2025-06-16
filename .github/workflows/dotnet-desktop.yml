@@ -61,11 +61,10 @@ jobs:
           dotnet-version: | 
             8.0.x
       - run: |
-           cd privateTest
-           dotnet run
-           cd ../
+           ls -R
+           dotnet run --project ./Main
            mkdir data
-           mv ./privateTest/test.csv ./data
+           mv test.csv ./data
            echo "<h1>Hello GitHub Pages!</h1>" > data/index.html 
       - uses: actions/upload-artifact@v4
         with:
