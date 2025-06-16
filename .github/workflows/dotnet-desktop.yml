@@ -66,7 +66,7 @@ jobs:
            dotnet run
            cd ../
            mkdir data
-           mv test.csv ./data
+           mv TextData.csv ./data
            echo "<h1>Hello GitHub Pages!</h1>" > data/index.html 
       - uses: actions/upload-artifact@v4
         with:
