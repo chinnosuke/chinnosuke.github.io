@@ -54,7 +54,7 @@ jobs:
         with:
           path: ${{ env.cache_dir }}
           key: ${{ env.cache_key }}${{ env.TIMESTAMP }}
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
