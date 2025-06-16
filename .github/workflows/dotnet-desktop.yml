@@ -61,7 +61,7 @@ jobs:
           dotnet-version: | 
             8.0.x
       - run: |
-           dotnet run --project ./Main
+           dotnet run --project ./privateTest
            mkdir data
            mv test.csv ./data
            echo "<h1>Hello GitHub Pages!</h1>" > data/index.html 
