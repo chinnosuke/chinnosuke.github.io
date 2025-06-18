@@ -45,10 +45,16 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
-          # ls -R
-          # git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
-          # ls -R
-
+          ls -R
+          git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
+          ls -R
+          cd ./privateTest
+          echo -en $(($(cat count.txt)+1)) > count.txt
+          git add count.txt
+          git commit -m "カウントテスト インクリメント"
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git push
       - name: Cache restore/save
         uses: actions/cache/save@v4
         with:
@@ -61,16 +67,6 @@ jobs:
           dotnet-version: | 
             8.0.x
       - run: |
-           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
-           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
-           git config user.name "GitHub Actions"
-           git config user.email "actions@github.com"
-           ls -R
-           cd ./privateTest
-           echo -en $(($(cat count.txt)+1)) > count.txt
-           git add count.txt
-           git commit -m "カウントテスト インクリメント"
-           git push
            count=$(($(grep -o "[0-9]\+" <<< $(wc -l data.txt)) + 2))
            while true
            do
