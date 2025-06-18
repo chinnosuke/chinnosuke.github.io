@@ -82,7 +82,7 @@ jobs:
            cd ../
            mkdir data
            mv ./privateTest/TextData.csv ./data
-           mv ./privateTest/data.csv ./data
+           mv ./privateTest/data.txt ./data
            echo "<h1>Hello GitHub Pages!</h1>" > data/index.html 
       - uses: actions/upload-artifact@v4
         with:
