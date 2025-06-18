@@ -45,22 +45,26 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
-          ls -R
-          git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
-          ls -R
+          # ls -R
+          # git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
+          # ls -R
 
       - name: Cache restore/save
         uses: actions/cache/save@v4
         with:
           path: ${{ env.cache_dir }}
           key: ${{ env.cache_key }}${{ env.TIMESTAMP }}
-      # - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: | 
             8.0.x
       - run: |
+           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
+           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
+           git config user.name "GitHub Actions"
+           git config user.email "actions@github.com"
            ls -R
            cd ./privateTest
            echo -en $(($(cat count.txt)+1)) > count.txt
