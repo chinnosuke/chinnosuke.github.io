@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: write
     env:
       OWNER: ${{ github.repository_owner }}
       cache_key: cache-  # ※ 本来このような適当なkeyは使用しない
