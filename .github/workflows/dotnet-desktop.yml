@@ -48,14 +48,14 @@ jobs:
         run: |
           # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
           ls -R
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
           git clone https://x-access-token:"$GITHUB_TOKEN"@github.com/chinnosuke/privateTest.git
           ls -R
           cd ./privateTest
           echo -en $(($(cat count.txt)+1)) > count.txt
           git add count.txt
           git commit -m "カウントテスト インクリメント"
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
           git push
       - name: Cache restore/save
         uses: actions/cache/save@v4
