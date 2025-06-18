@@ -63,8 +63,8 @@ jobs:
       - run: |
            ls -R
            cd ./privateTest
-           echo -en $(($(cat test.txt)+1)) > test.txt
-           git add test.txt
+           echo -en $(($(cat count.txt)+1)) > count.txt
+           git add count.txt
            git push
            count=$(($(grep -o "[0-9]\+" <<< $(wc -l data.txt)) + 2))
            while true
