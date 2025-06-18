@@ -58,6 +58,8 @@ jobs:
         with:
           dotnet-version: | 
             8.0.x
+        env:
+          GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
       - run: |
            # クローンするプライベートリポジトリ名に応じて <REPO_NAME> を書き換える
            ls -R
