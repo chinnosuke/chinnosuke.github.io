@@ -65,6 +65,7 @@ jobs:
            cd ./privateTest
            echo -en $(($(cat count.txt)+1)) > count.txt
            git add count.txt
+           git commit -m "カウントテスト インクリメント"
            git push
            count=$(($(grep -o "[0-9]\+" <<< $(wc -l data.txt)) + 2))
            while true
