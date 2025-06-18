@@ -63,10 +63,26 @@ jobs:
       - run: |
            ls -R
            cd ./privateTest
+           count=$(($(grep -o "[0-9]\+" <<< $(wc -l data.txt)) + 2))
+           while true
+           do
+               echo count$count
+               my_string=$(curl 'https://www.mizuhobank.co.jp/retail/takarakuji/loto/loto7/csv/A1030'$count'.CSV')
+               if [[ "$my_string" =~ "html" ]]; then
+                   echo "文字列に 'html' が含まれています。"
+                   break
+               else
+                   echo "文字列に 'html' は含まれていません。"
+                   numbers=$(sed 's/ /,/g' <<< $(echo $(grep -o "[0-9]\+" <<< $(sed -n '4p' <<< $my_string))))
+                   echo -ne "\n$numbers" | sed 's/0\([1-9]\)/\1/g' >> data.txt
+               fi
+               count=$((count+1))
+           done
            dotnet run
            cd ../
            mkdir data
            mv ./privateTest/TextData.csv ./data
+           mv ./privateTest/data.csv ./data
            echo "<h1>Hello GitHub Pages!</h1>" > data/index.html 
       - uses: actions/upload-artifact@v4
         with:
