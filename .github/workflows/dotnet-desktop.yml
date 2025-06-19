@@ -70,6 +70,7 @@ jobs:
             8.0.x
       - run: |
            ls
+           cd ./privateTest
            count=$(($(grep -o "[0-9]\+" <<< $(wc -l data.txt)) + 2))
            while true
            do
